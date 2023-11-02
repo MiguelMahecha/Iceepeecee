@@ -153,13 +153,9 @@ public class Iceepeecee {
 
         List<String> observed = Arrays.asList(observedIslands());
         if (!observed.isEmpty()) {
-//            for (String s : observed) {
-//                islands.get(s).isObserved(true);
-//                islands.get(s).makeVisible();
-//            }
             for (String s : islands.keySet()) {
                 islands.get(s).isObserved(observed.contains(s));
-                islands.get(s).makeVisible();
+                if (isVisible) islands.get(s).makeVisible();
             }
         }
     }
@@ -171,7 +167,11 @@ public class Iceepeecee {
      */
     public void delIsland(String color) throws IceepeeceeException {
         if (!islands.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.ISLAND_NOT_FOUND);
-        if (!(islands.get(color) instanceof FixedIsland)) islands.remove(color);
+        Island island = loadIsland(color);
+        if (!(island instanceof FixedIsland)) {
+            island.makeInvisible();
+            islands.remove(color);
+        };
     }
 
     /**
@@ -181,6 +181,8 @@ public class Iceepeecee {
      */
     public void delFlight(String color) throws IceepeeceeException {
         if (!flights.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.FLIGHT_NOT_FOUND);
+        Flight f = loadFlight(color);
+        f.makeInvisible();
         flights.remove(color);
     }
 
@@ -214,7 +216,8 @@ public class Iceepeecee {
      */
     public int flightCamera(String color) throws IceepeeceeException {
         if (!flights.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.FLIGHT_NOT_FOUND);
-        return flights.get(color).getAngle();
+        Flight f = loadFlight(color);
+        return f.getAngle();
     }
 
     /**
@@ -254,7 +257,14 @@ public class Iceepeecee {
         return observed.toArray(new String[0]);
     }
 
-    public String[] observedIslands(String color) {
+    /**
+     * Check what islands are being observed by the given flight
+     * @param color The flight to query
+     * @return A string array
+     * @throws IceepeeceeException If the flight does not exist
+     */
+    public String[] observedIslands(String color) throws IceepeeceeException {
+        if (loadFlight(color) == null) throw new IceepeeceeException(IceepeeceeException.FLIGHT_NOT_FOUND);
         ArrayList<String> observed = new ArrayList<>();
         Flight f = loadFlight(color);
         String[] observedByF = f.observedIslands(islands.values().toArray(new Island[0]));
@@ -282,6 +292,7 @@ public class Iceepeecee {
      */
     public void makeVisible() {
         this.isVisible = true;
+        Canvas.getCanvas().setVisible(true);
         for (Flight f : flights.values()) f.makeVisible();
         for (Island i : islands.values()) i.makeVisible();
     }

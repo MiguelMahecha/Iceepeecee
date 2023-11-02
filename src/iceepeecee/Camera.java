@@ -5,7 +5,6 @@ import utilities.PolygonBuilder;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Camera extends Entity {
     private final Flight owner;
@@ -22,6 +21,14 @@ public class Camera extends Entity {
         if (isVisible) {
             shapes.Canvas canvas = Canvas.getCanvas();
             canvas.draw(this, color, photo, false);
+        }
+    }
+
+    @Override
+    void makeVisible() {
+        if (photo != null) {
+            isVisible = true;
+            draw();
         }
     }
 

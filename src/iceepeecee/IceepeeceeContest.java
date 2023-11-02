@@ -38,7 +38,7 @@ public class IceepeeceeContest {
                 prevMid = mid;
                 mid = (high + low) / 2;
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                simulator.displayError(e.getMessage());
             }
         }
         System.out.println(mid);

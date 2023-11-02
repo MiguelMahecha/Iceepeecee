@@ -55,6 +55,20 @@ public class Flight extends Entity {
     }
 
     @Override
+    void makeVisible() {
+        isVisible = true;
+        makePhotoVisible();
+        draw();
+    }
+
+    @Override
+    void makeInvisible() {
+        isVisible = true;
+        makePhotoInvisible();
+        erase();
+    }
+
+    @Override
     protected void draw() {
         if (isVisible) {
             Canvas canvas = Canvas.getCanvas();

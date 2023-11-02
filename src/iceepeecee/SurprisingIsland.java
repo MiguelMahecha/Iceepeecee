@@ -11,6 +11,7 @@ public class SurprisingIsland extends Island{
      */
     public SurprisingIsland(String color, int[][] polygons) {
         super(color, polygons);
+        this.location = polygons;
     }
 
     /**
@@ -20,7 +21,7 @@ public class SurprisingIsland extends Island{
     public int[][] getLocation() {
         int[][] location2 = new int[this.location.length - 1][];
 
-        System.arraycopy(this.location, 1, location2, 1, this.location.length - 1);
+        System.arraycopy(this.location, 1, location2, 0, this.location.length - 1);
 
         this.location = location2;
 
