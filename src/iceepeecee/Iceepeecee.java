@@ -369,7 +369,7 @@ public class Iceepeecee {
         return color;
     }
 
-    public void displayError(String message) {
-        JOptionPane.showConfirmDialog(null, message);
+    public void displayMessage(String message) {
+        JOptionPane.showMessageDialog(null, message);
     }
 }

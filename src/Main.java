@@ -15,7 +15,7 @@ public class Main {
 
         try {
             IceepeeceeContest contest = new IceepeeceeContest();
-            contest.solve(testIslands, testFlights);
+            contest.simulate(testIslands, testFlights);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {

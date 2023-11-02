@@ -4,15 +4,22 @@ import utilities.PolygonBuilder;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class IceepeeceeContest {
     private Iceepeecee simulator;
     private HashMap<Integer, FlightVector> inputFlights;
     private HashMap<Integer, Polygon> inputIslands;
+    private ArrayList<Float> steps;
+
+    public IceepeeceeContest() {
+        steps = new ArrayList<>();
+    }
 
     /**
      * Solve the ICPC problem with the given input
+     *
      * @param islands The islands
      * @param flights The flights
      * @return The solution
@@ -20,26 +27,20 @@ public class IceepeeceeContest {
     public float solve(int[][][] islands, int[][][] flights) {
         inputFlights = buildFlightVectors(flights);
         inputIslands = buildIslandPolygons(islands);
-        simulate(islands, flights);
         float high = 90.f;
         float low = 0.f;
         float mid = (high + low) / 2;
         float prevMid = mid;
         while (high >= low) {
-            try {
-                Thread.sleep(1000);
-                updatePhoto(mid);
-                if (isSurveyComplete(mid)) {
-                    high = mid;
-                    if (Math.abs(mid - prevMid) < 0.1f) break;
-                } else {
-                    low = mid;
-                }
-                prevMid = mid;
-                mid = (high + low) / 2;
-            } catch (Exception e) {
-                simulator.displayError(e.getMessage());
+            steps.add(mid);
+            if (isSurveyComplete(mid)) {
+                high = mid;
+                if (Math.abs(mid - prevMid) < 0.1f) break;
+            } else {
+                low = mid;
             }
+            prevMid = mid;
+            mid = (high + low) / 2;
         }
         System.out.println(mid);
         return mid;
@@ -47,6 +48,7 @@ public class IceepeeceeContest {
 
     /**
      * Given the input, simulate the process of solving the problem
+     *
      * @param islands The islands
      * @param flights The flights
      */
@@ -54,8 +56,16 @@ public class IceepeeceeContest {
         try {
             simulator = new Iceepeecee(islands, flights);
             simulator.makeVisible();
+            float solution = solve(islands, flights);
+            for (Float step : steps) {
+                Thread.sleep(1000);
+                simulator.photograph(step);
+            }
+            simulator.displayMessage("Solution = " + solution);
         } catch (IceepeeceeException e) {
-            simulator.displayError(e.getMessage());
+            simulator.displayMessage(e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -90,7 +100,7 @@ public class IceepeeceeContest {
             try {
                 simulator.photograph(theta);
             } catch (IceepeeceeException e) {
-                simulator.displayError(e.getMessage());
+                simulator.displayMessage(e.getMessage());
             }
         }
     }
@@ -137,6 +147,7 @@ public class IceepeeceeContest {
 class FlightVector {
     public final int x1, y1, z1;
     public final int x2, y2, z2;
+
     public FlightVector(int[] origin, int[] dest) {
         x1 = origin[0];
         y1 = origin[1];
