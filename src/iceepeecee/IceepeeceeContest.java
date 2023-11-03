@@ -55,7 +55,9 @@ public class IceepeeceeContest {
     public void simulate(int[][][] islands, int[][][] flights) {
         try {
             simulator = new Iceepeecee(islands, flights);
+            simulator.setHeadless(true);
             simulator.makeVisible();
+            simulator.setHeadless(true);
             float solution = solve(islands, flights);
             for (Float step : steps) {
                 Thread.sleep(1000);

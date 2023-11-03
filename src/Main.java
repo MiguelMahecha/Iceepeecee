@@ -1,4 +1,10 @@
+import iceepeecee.Iceepeecee;
 import iceepeecee.IceepeeceeContest;
+import iceepeecee.Island;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeMap;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,8 +20,22 @@ public class Main {
         };
 
         try {
-            IceepeeceeContest contest = new IceepeeceeContest();
-            contest.simulate(testIslands, testFlights);
+//            ICEEPEECEE With error messages
+            Iceepeecee simulator = new Iceepeecee(testIslands, testFlights);
+            simulator.makeVisible();
+
+//            Take photographs
+            Thread.sleep(1000);
+            simulator.photograph(40.f);
+            Thread.sleep(1000);
+            simulator.photograph(30.f);
+            Thread.sleep(1000);
+//            Surprise Island
+            List<String> islands = Arrays.stream(simulator.islands()).toList();
+            simulator.addIsland("Surprising", "grey", new int[][]{{80, 60}, {100, 50}, {115, 60}, {100, 70}});
+            Thread.sleep(1000);
+            System.out.println(Arrays.deepToString(simulator.islandLocation("blue")));
+            Thread.sleep(1000);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {

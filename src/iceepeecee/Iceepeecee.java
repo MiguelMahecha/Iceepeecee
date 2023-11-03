@@ -14,6 +14,8 @@ public class Iceepeecee {
     private final HashMap<String, Flight> flights;
     private final int length;
     private final int width;
+    private boolean headless;
+    private boolean ok;
 
     /**
      * Create a new Iceepeecee map with the given length and width
@@ -37,8 +39,14 @@ public class Iceepeecee {
      */
     public Iceepeecee(int[][][] islands, int[][][] flights) throws IceepeeceeException {
         this(1000, 1000);
-        buildFlights(flights);
-        buildIslands(islands);
+        try {
+            buildFlights(flights);
+            buildIslands(islands);
+        } catch (IceepeeceeException e) {
+            ok = false;
+            if (headless) throw e;
+            else displayMessage(e.getMessage());
+        }
     }
 
     /**
@@ -48,12 +56,19 @@ public class Iceepeecee {
      * @param polygon The island's shape
      */
     public void addIsland(String color, int[][] polygon) throws IceepeeceeException {
-        if (!this.validIslandPoints(polygon)) throw new IceepeeceeException(IceepeeceeException.INVALID_ISLAND);
-        if (this.islands.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.ISLAND_ALREADY_EXISTS);
+        ok = true;
+        try {
+            if (!this.validIslandPoints(polygon)) throw new IceepeeceeException(IceepeeceeException.INVALID_ISLAND);
+            if (this.islands.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.ISLAND_ALREADY_EXISTS);
 
-        Island i = new Island(color, polygon);
-        this.islands.put(i.getColor(), i);
-        if (isVisible) islands.get(i.getColor()).makeVisible();
+            Island i = new Island(color, polygon);
+            this.islands.put(i.getColor(), i);
+            if (isVisible) islands.get(i.getColor()).makeVisible();
+        } catch (IceepeeceeException e) {
+            ok = false;
+            if (headless) throw e;
+            else displayMessage(e.getMessage());
+        }
     }
 
     /**
@@ -64,15 +79,22 @@ public class Iceepeecee {
      * @param polygon The island's polygon
      */
     public void addIsland(String type, String color, int[][] polygon) throws IceepeeceeException {
-        if (!this.validIslandPoints(polygon)) throw new IceepeeceeException(IceepeeceeException.INVALID_ISLAND);
-        if (this.islands.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.ISLAND_ALREADY_EXISTS);
-        Island i = switch (type) {
-            case "Normal" -> new Island(color, polygon);
-            case "Fixed" -> new FixedIsland(color, polygon);
-            default -> new SurprisingIsland(color, polygon);
-        };
-        this.islands.put(i.getColor(), i);
-        if (isVisible) islands.get(i.getColor()).makeVisible();
+        ok = true;
+       try {
+           if (!this.validIslandPoints(polygon)) throw new IceepeeceeException(IceepeeceeException.INVALID_ISLAND);
+           if (this.islands.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.ISLAND_ALREADY_EXISTS);
+           Island i = switch (type) {
+               case "Normal" -> new Island(color, polygon);
+               case "Fixed" -> new FixedIsland(color, polygon);
+               default -> new SurprisingIsland(color, polygon);
+           };
+           this.islands.put(i.getColor(), i);
+           if (isVisible) islands.get(i.getColor()).makeVisible();
+       } catch (IceepeeceeException e) {
+           ok = false;
+           if (headless) throw e;
+           else displayMessage(e.getMessage());
+       }
     }
 
     /**
@@ -83,12 +105,19 @@ public class Iceepeecee {
      * @param to    Flight destination
      */
     public void addFlight(String color, int[] from, int[] to) throws IceepeeceeException {
-        if (!validPointsForFlight(from, to)) throw new IceepeeceeException(IceepeeceeException.INVALID_FLIGHT);
-        if (flights.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.FLIGHT_ALREADY_EXISTS);
+        ok = true;
+        try {
+            if (!validPointsForFlight(from, to)) throw new IceepeeceeException(IceepeeceeException.INVALID_FLIGHT);
+            if (flights.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.FLIGHT_ALREADY_EXISTS);
 
-        Flight f = new Flight(color, from, to);
-        flights.put(f.getColor(), f);
-        if (isVisible) flights.get(f.getColor()).makeVisible();
+            Flight f = new Flight(color, from, to);
+            flights.put(f.getColor(), f);
+            if (isVisible) flights.get(f.getColor()).makeVisible();
+        } catch (IceepeeceeException e) {
+            ok = false;
+            if (headless) throw e;
+            else displayMessage(e.getMessage());
+        }
     }
 
     /**
@@ -99,16 +128,23 @@ public class Iceepeecee {
      * @param to    Flight destination
      */
     public void addFlight(String type, String color, int[] from, int[] to) throws IceepeeceeException {
-        if (!validPointsForFlight(from, to)) throw new IceepeeceeException(IceepeeceeException.INVALID_FLIGHT);
-        if (flights.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.FLIGHT_ALREADY_EXISTS);
+        ok = true;
+        try {
+            if (!validPointsForFlight(from, to)) throw new IceepeeceeException(IceepeeceeException.INVALID_FLIGHT);
+            if (flights.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.FLIGHT_ALREADY_EXISTS);
 
-        Flight f = switch (type) {
-            case "Lazy" -> new LazyFlight(color, from, to);
-            case "Flat" -> new FlatFlight(color, from, to);
-            default -> new Flight(color, from, to);
-        };
-        flights.put(f.getColor(), f);
-        if (isVisible) flights.get(f.getColor()).makeVisible();
+            Flight f = switch (type) {
+                case "Lazy" -> new LazyFlight(color, from, to);
+                case "Flat" -> new FlatFlight(color, from, to);
+                default -> new Flight(color, from, to);
+            };
+            flights.put(f.getColor(), f);
+            if (isVisible) flights.get(f.getColor()).makeVisible();
+        } catch (IceepeeceeException e) {
+            ok = false;
+            if (headless) throw e;
+            else displayMessage(e.getMessage());
+        }
     }
 
     /**
@@ -118,16 +154,23 @@ public class Iceepeecee {
      * @param theta  The angle to take the photo with
      */
     public void photograph(String flight, int theta) throws IceepeeceeException {
-        Flight f = loadFlight(flight);
-        if (f == null) throw new IceepeeceeException(IceepeeceeException.FLIGHT_NOT_FOUND);
-        f.takePhoto(theta);
-        String[] observed = observedIslands(f.getColor());
-        if (observed != null && observed.length >= 1) {
-            for (String s : observed) {
-                islands.get(s).isObserved(true);
-                islands.get(s).makeVisible();
+        ok = true;
+        try {
+            Flight f = loadFlight(flight);
+            if (f == null) throw new IceepeeceeException(IceepeeceeException.FLIGHT_NOT_FOUND);
+            f.takePhoto(theta);
+            String[] observed = observedIslands(f.getColor());
+            if (observed != null && observed.length >= 1) {
+                for (String s : observed) {
+                    islands.get(s).isObserved(true);
+                    islands.get(s).makeVisible();
+                }
+                if (isVisible) f.makePhotoVisible();
             }
-            if (isVisible) f.makePhotoVisible();
+        } catch (IceepeeceeException e) {
+            ok = false;
+            if (headless) throw e;
+            else displayMessage(e.getMessage());
         }
     }
 
@@ -137,7 +180,14 @@ public class Iceepeecee {
      * @param theta The angle to take the photo with
      */
     public void photograph(int theta) throws IceepeeceeException {
-        photograph((float) theta);
+        ok = true;
+        try {
+            photograph((float) theta);
+        } catch (IceepeeceeException e) {
+            ok = false;
+            if (headless) throw e;
+            else displayMessage(e.getMessage());
+        }
     }
 
     /**
@@ -146,17 +196,24 @@ public class Iceepeecee {
      * @param theta The angle to take the photo with
      */
     public void photograph(float theta) throws IceepeeceeException {
-        for (Flight f : flights.values()) {
-            f.takePhoto(theta);
-            if (isVisible) f.makePhotoVisible();
-        }
-
-        List<String> observed = Arrays.asList(observedIslands());
-        if (!observed.isEmpty()) {
-            for (String s : islands.keySet()) {
-                islands.get(s).isObserved(observed.contains(s));
-                if (isVisible) islands.get(s).makeVisible();
+        ok = true;
+        try {
+            for (Flight f : flights.values()) {
+                f.takePhoto(theta);
+                if (isVisible) f.makePhotoVisible();
             }
+
+            List<String> observed = Arrays.asList(observedIslands());
+            if (!observed.isEmpty()) {
+                for (String s : islands.keySet()) {
+                    islands.get(s).isObserved(observed.contains(s));
+                    if (isVisible) islands.get(s).makeVisible();
+                }
+            }
+        } catch (IceepeeceeException e) {
+            ok = false;
+            if (headless) throw e;
+            else displayMessage(e.getMessage());
         }
     }
 
@@ -166,12 +223,19 @@ public class Iceepeecee {
      * @param color The island to delete
      */
     public void delIsland(String color) throws IceepeeceeException {
-        if (!islands.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.ISLAND_NOT_FOUND);
-        Island island = loadIsland(color);
-        if (!(island instanceof FixedIsland)) {
-            island.makeInvisible();
-            islands.remove(color);
-        };
+        ok = true;
+        try {
+            if (!islands.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.ISLAND_NOT_FOUND);
+            Island island = loadIsland(color);
+            if (!(island instanceof FixedIsland)) {
+                island.makeInvisible();
+                islands.remove(color);
+            };
+        } catch (IceepeeceeException e) {
+            ok = false;
+            if (headless) throw e;
+            else displayMessage(e.getMessage());
+        }
     }
 
     /**
@@ -180,10 +244,17 @@ public class Iceepeecee {
      * @param color The flight to delete
      */
     public void delFlight(String color) throws IceepeeceeException {
-        if (!flights.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.FLIGHT_NOT_FOUND);
-        Flight f = loadFlight(color);
-        f.makeInvisible();
-        flights.remove(color);
+        ok = true;
+        try {
+            if (!flights.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.FLIGHT_NOT_FOUND);
+            Flight f = loadFlight(color);
+            f.makeInvisible();
+            flights.remove(color);
+        } catch (IceepeeceeException e) {
+            ok = false;
+            if (headless) throw e;
+            else displayMessage(e.getMessage());
+        }
     }
 
     /**
@@ -193,8 +264,16 @@ public class Iceepeecee {
      * @return A 2d array containing the island location points
      */
     public int[][] islandLocation(String island) throws IceepeeceeException {
-        if (!islands.containsKey(island)) throw new IceepeeceeException(IceepeeceeException.ISLAND_NOT_FOUND);
-        return islands.get(island).getLocation();
+        ok = true;
+        try {
+            if (!islands.containsKey(island)) throw new IceepeeceeException(IceepeeceeException.ISLAND_NOT_FOUND);
+            return islands.get(island).getLocation();
+        } catch (IceepeeceeException e) {
+            ok = false;
+            if (headless) throw e;
+            else displayMessage(e.getMessage());
+        }
+        return new int[0][];
     }
 
     /**
@@ -204,8 +283,16 @@ public class Iceepeecee {
      * @return A 2d array containing the flight location points
      */
     public int[][] flightLocation(String flight) throws IceepeeceeException {
-        if (!flights.containsKey(flight)) throw new IceepeeceeException(IceepeeceeException.FLIGHT_NOT_FOUND);
-        return flights.get(flight).getLocation();
+        ok = true;
+        try {
+            if (!flights.containsKey(flight)) throw new IceepeeceeException(IceepeeceeException.FLIGHT_NOT_FOUND);
+            return flights.get(flight).getLocation();
+        } catch (IceepeeceeException e) {
+            ok = false;
+            if (headless) throw e;
+            else displayMessage(e.getMessage());
+        }
+        return new int[0][];
     }
 
     /**
@@ -215,9 +302,17 @@ public class Iceepeecee {
      * @return The aperture angle of a plane's camera
      */
     public int flightCamera(String color) throws IceepeeceeException {
-        if (!flights.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.FLIGHT_NOT_FOUND);
-        Flight f = loadFlight(color);
-        return f.getAngle();
+        ok = true;
+        try {
+            if (!flights.containsKey(color)) throw new IceepeeceeException(IceepeeceeException.FLIGHT_NOT_FOUND);
+            Flight f = loadFlight(color);
+            return f.getAngle();
+        } catch (IceepeeceeException e) {
+            ok = false;
+            if (headless) throw e;
+            else displayMessage(e.getMessage());
+        }
+        return 0;
     }
 
     /**
@@ -371,5 +466,11 @@ public class Iceepeecee {
 
     public void displayMessage(String message) {
         JOptionPane.showMessageDialog(null, message);
+    }
+
+    public void setHeadless(boolean flag) { headless = flag;}
+
+    public boolean isOk() {
+        return ok;
     }
 }

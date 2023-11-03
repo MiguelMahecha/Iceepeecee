@@ -22,14 +22,14 @@ class IceepeeceeTest {
                 {{40, 20}, {60, 10}, {75, 20}, {60, 30}},
                 {{45, 60}, {55, 55}, {60, 60}, {55, 65}}
         };
+        simulator = new Iceepeecee(1000, 1000);
+        simulator.setHeadless(true);
     }
 
 //    Adding an Island
 
     @Test
     void shouldAddValidIsland() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.addIsland("blue", testIslands[0]);
             assertNotNull(simulator.loadIsland("blue"));
@@ -40,8 +40,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldNotAddInvalidIsland() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.addIsland("red", new int[][]{{-3, 4}, {5, 3}, {1010, 6}});
             fail("Did not throw exception");
@@ -52,8 +50,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldNotAddRepeatedIslandColor() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.addIsland("red", testIslands[0]);
             simulator.addIsland("red", testIslands[1]);
@@ -66,8 +62,6 @@ class IceepeeceeTest {
     //    Adding a Flight
     @Test
     void shouldAddValidFlight() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.addFlight("yellow", testFlights[0][0], testFlights[0][1]);
             assertNotNull(simulator.loadFlight("yellow"));
@@ -78,8 +72,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldNotAddInvalidFlight() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.addFlight("yellow", testFlights[0][0], new int[]{20, 1040, 4});
             fail("Did not threw exception");
@@ -90,8 +82,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldNotAddFlightThatAlreadyExists() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.addFlight("red", testFlights[0][0], testFlights[0][1]);
             simulator.addFlight("red", testFlights[1][0], testFlights[1][1]);
@@ -105,8 +95,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldTakePhotographThetaInt() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.photograph(50);
         } catch (IceepeeceeException e) {
@@ -116,8 +104,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldTakePhotographThetaFloat() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.photograph(50.0f);
         } catch (IceepeeceeException e) {
@@ -127,8 +113,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldTakePhotographThetaIntGivenFlight() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.addFlight("red", testFlights[0][0], testFlights[0][1]);
             simulator.photograph("red", 50);
@@ -139,8 +123,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldNotTakePhotographInvalidAngle() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.photograph(190.0f);
             simulator.photograph(-5.0f);
@@ -152,8 +134,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldNotTakePhotographNonExistentFlight() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.photograph("red", 50);
             fail("Did not threw exception");
@@ -165,8 +145,6 @@ class IceepeeceeTest {
     //    DELETE ISLANDS
     @Test
     void shouldDeleteIsland() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.addIsland("red", testIslands[0]);
             assertNotNull(simulator.loadIsland("red"));
@@ -179,8 +157,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldNotDeleteIslandThatDoesntExists() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.delIsland("red");
             fail("Did not threw exception");
@@ -191,8 +167,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldDeleteFlight() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.addFlight("red", testFlights[0][1], testFlights[0][1]);
             assertNotNull(simulator.loadFlight("red"));
@@ -205,8 +179,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldNotDeleteFlightThatDoesNotExist() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.delFlight("red");
             fail("Did not threw exception");
@@ -218,8 +190,6 @@ class IceepeeceeTest {
     //    QUERIES
     @Test
     void shouldGetIslandLocation() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.addIsland("red", testIslands[0]);
             assertEquals(simulator.islandLocation("red"), testIslands[0]);
@@ -230,8 +200,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldGetFlightLocation() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.addFlight("yellow", testFlights[0][0], testFlights[0][1]);
             assertArrayEquals(simulator.flightLocation("yellow"), new int[][]{testFlights[0][0], testFlights[0][1]});
@@ -242,8 +210,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldNotGetLocationOfNonExistentIsland() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.islandLocation("red");
             fail("Did not threw exception");
@@ -254,8 +220,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldNotGetLocationOfNonExistentFlight() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.flightLocation("red");
             fail("Did not threw exception");
@@ -267,8 +231,6 @@ class IceepeeceeTest {
 //    ANGLE
     @Test
     void shouldGetAngleOfPreviouslyMadePhotograph() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             simulator.addFlight("yellow", testFlights[0][0], testFlights[0][1]);
             simulator.photograph("yellow", 50);
@@ -280,8 +242,6 @@ class IceepeeceeTest {
 
     @Test
     void shouldNotGetAngleOfNonExistentFlight() {
-        simulator = new Iceepeecee(1000, 1000);
-
         try {
             assertEquals(simulator.flightCamera("yellow"), 50);
             fail("Did not throw exception");
